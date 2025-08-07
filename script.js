@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (event) => {
             event.preventDefault();
             alert('Login realizado com sucesso!');
-            window.location.href = 'dashboard.html';
+            window.location.href = 'table.html';
         });
     }
 
