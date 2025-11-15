@@ -1,20 +1,16 @@
-<?php 
+<?php
 $database = "monolety";
 $servername = "localhost";
-$username= "root";
-$password = "Joaopc35.";
-
-try{
-
-    $conexao = new PDO("mysql:host=$servername; dbname=$database", $username, $password);
+$username = "root";
+$password = "1234";
+//
+try {
+    // Cria conexão PDO
+    $conexao = new PDO("mysql:host=$servername;port=3312;dbname=$database;charset=utf8", $username, $password);
+    // Ativa modo de erro
     $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Conexão estabelecida com sucesso";
-
-} catch(PDOException $e) {
-
-    echo "Conexão falhou: ".$e->getMessage();
-
+} catch (PDOException $e) {
+    echo json_encode(["status" => "erro", "message" => "Conexão falhou: " . $e->getMessage()]);
+    exit;
 }
-
 ?>
-                
