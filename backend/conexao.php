@@ -1,16 +1,16 @@
 <?php
 $database = "monolety";
-$servername = "localhost";
+$servername = "127.0.0.1"; 
 $username = "root";
-$password = "1234";
-//
+$password = "kali";
+
 try {
     // Cria conexão PDO
-    $conexao = new PDO("mysql:host=$servername;port=3312;dbname=$database;charset=utf8", $username, $password);
-    // Ativa modo de erro
+    $conexao = new PDO("mysql:host=$servername;dbname=$database;charset=utf8", $username, $password);
+    
+   
     $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo json_encode(["status" => "erro", "message" => "Conexão falhou: " . $e->getMessage()]);
-    exit;
+} catch(PDOException $e){ 
+    echo "Conexão falhou: " . $e->getMessage(); 
 }
 ?>

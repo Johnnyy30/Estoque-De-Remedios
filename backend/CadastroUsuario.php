@@ -1,23 +1,23 @@
 <?php
 
-header('Content-Type: application/json');
-session_start();
-
-include('conexao.php');
-include('log_helper.php'); 
-
-// --- 1. DEFINIÇÕES E DADOS DO FORMULÁRIO ---
-$nome  = $_POST['usuario'] ?? '';
-$email = $_POST['email'] ?? '';
-$senha = $_POST['password'] ?? '';
-
-// --- 2. VALIDAÇÃO DOS CAMPOS DE TEXTO ---
-
-if (empty($nome) || empty($email) || empty($senha)) {
-    echo json_encode(["status" => "erro", "message" => "Preencha todos os campos obrigatórios."]);
+// --- 1. VALIDAÇÃO DOS CAMPOS DE TEXTO ---
+if($_REQUEST['nome'] == "" || $_REQUEST['email'] == "" || $_REQUEST['senha'] == "")
+{
+    echo "Há campos vazios!";
     exit;
 }
 
+include('conexao.php');
+
+// --- 2. DEFINIÇÕES E DADOS DO FORMULÁRIO ---
+$nome = $_REQUEST['nome'];
+$email = $_REQUEST['email'];
+$senha = $_REQUEST['senha'];
+
+//criptografia da senha
+$senhaCripto = password_hash($senha, PASSWORD_DEFAULT);
+
+/*   ### CODIGO PARA COLOCAR IMAGEM. ps: tem que adaptar pra funcionar
 $path = null;       
 $pathParaDB = null; 
 
@@ -50,48 +50,31 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         echo json_encode(["status" => "erro", "message" => "Erro ao salvar a imagem."]);
         exit;
     }
-}
+}*/
 
 // --- 4. LÓGICA DO BANCO DE DADOS ---
-try {
-    // Verifica se o e-mail já existe
-    $sql = "SELECT * FROM usuario WHERE email = ?";
-    $stmt = $conexao->prepare($sql);
-    $stmt->execute([$email]); 
-    $user = $stmt->fetch(); 
-
-    if ($user) {
-        
-        if ($path && file_exists($path)) {
-            unlink($path);
-        }
-        echo json_encode(["status" => "erro", "message" => "Este e-mail já foi cadastrado."]);
-        exit;
-    }
-
-    $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
-    $sql = "INSERT INTO usuario (nome, email, senha, foto_path) VALUES (?, ?, ?, ?)";
-    $stmt = $conexao->prepare($sql);
+try
+{
+    //monta consulta preparada para inserir usuário
+    $consulta_cadastro = $conexao->prepare("INSERT INTO usuario(nome, email, senha) VALUES (:nome, :email, :senhaCripto)");
+    $consulta_cadastro->bindParam(':nome', $nome);
+    $consulta_cadastro->bindParam(':email', $email);
+    $consulta_cadastro->bindParam(':senhaCripto', $senhaCripto);
     
+    //executa a consulta
+    $consulta_cadastro->execute();
 
-    if ($stmt->execute([$nome, $email, $senhaHash, $pathParaDB])) {
+    //sucesso
+    $response = array("status" => "erro", "mensagem" => "Usuário cadastrado com sucesso!");
+    echo json_encode($response);
 
-       
-        $acao = "Cadastrou o novo funcionário '{$nome}'.";
-        registrar_log($conexao, $acao);
-        
-        echo json_encode(["status" => "ok", "message" => "Cadastro realizado com sucesso!"]);
-    } else {
-        echo json_encode(["status" => "erro", "message" => "Erro ao cadastrar usuário."]);
-    }
+}catch(PDOException $e)
+{ 
+    if($e->errorInfo[1] == 1062)
+        $response = array("status" => "erro", "mensagem" => "Já existe usuário com este e-mail");
+    else
+        $response = array("status" => "erro", "mensagem" => "Não foi possível cadastrar!");
 
-} catch (PDOException $e) {
-   
-    if ($path && file_exists($path)) {
-        unlink($path);
-    }
-    echo json_encode(["status" => "erro", "message" => "Erro no banco de dados: " . $e->getMessage()]);
-    exit;
+    echo json_encode($response);
 }
 ?>
