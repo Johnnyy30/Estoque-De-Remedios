@@ -1,6 +1,6 @@
-create schema monolety;
+create schema Estoque_de_Remedios;
 
-use monolety;
+use Estoque_de_Remedios;
 
 create table usuario
 (
@@ -10,9 +10,18 @@ create table usuario
     senha varchar(255),
     tipo enum('1','2') default 1,
     foto_path VARCHAR(255) NULL DEFAULT 'default.jpg',
-    data_upload DATETIME DEFAULT CURRENT_TIMESTAMP;
+    data_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
     primary key(idUsuario)
 );
+
+INSERT INTO usuario (nome, email, senha, tipo, foto_path) 
+VALUES (
+    'admin', 
+    'admin@exemplo.com', 
+    '$2y$10$n9R.F.Rk.S1O.vN.gZ.rZ6O6p.K8R0N.l.H.H.H.H.H.H.H.H.H.H.H.', 
+    '1', 
+    'default.jpg'
+)
 
 
 CREATE TABLE remedios (
