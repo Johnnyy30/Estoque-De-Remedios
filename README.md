@@ -30,6 +30,7 @@ mysql -u usuario -p Estoque_de_Remedios < estoque.sql
 #### 2. Vá em File > Open SQL Script > navegue ate a pastado arquivo e selecione o arquivo.
 #### 3. Clique no ícone de raio (Execute) para rodar todos os comandos
 
+
 ### #2 - Execute o projeto apartir do XAMPP
 #### 1. Iniciar os Serviços: Abra o "XAMPP Control Panel" e clique em "Start" ao lado de Apache e MySQL.
 #### 2. Preparar o Projeto: Copie a pasta do projeto para o diretório htdocs, geralmente localizado em C:\xampp\htdocs\.
