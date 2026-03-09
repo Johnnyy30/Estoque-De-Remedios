@@ -21,8 +21,7 @@ VALUES (
     '$2y$10$n9R.F.Rk.S1O.vN.gZ.rZ6O6p.K8R0N.l.H.H.H.H.H.H.H.H.H.H.H.', 
     '1', 
     'default.jpg'
-)
-
+);
 
 CREATE TABLE remedios (
   id INT AUTO_INCREMENT PRIMARY KEY,
